@@ -1,0 +1,14 @@
+Figs
+.RData
+.Rhistory
+R/*.RData
+Figs/
+latex_poster_template
+Sen
+*.pdf
+*.toc
+*.aux
+*.log
+*.out
+*.nav
+*.snm

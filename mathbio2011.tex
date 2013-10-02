@@ -1,0 +1,381 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Based on template frmo Nathaniel Johnston
+% August 2009
+% http://www.nathanieljohnston.com/2009/08/latex-poster-template/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[final,plain]{beamer}
+\usepackage[size=custom,width=100,height=100]{beamerposter}
+\usepackage{graphicx}			% allows us to import images
+\usepackage{palatino}
+\usepackage{helvet}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+% added by ss
+\renewcommand{\arraystretch}{1.1}
+%-----------------------------------------------------------
+% Define the column width and poster size
+% To set effective sepwid, onecolwid and twocolwid values, first choose how many columns you want and how much separation you want between columns
+% The separation I chose is 0.024 and I want 4 columns
+% Then set onecolwid to be (1-(4+1)*0.024)/4 = 0.22
+% Set twocolwid to be 2*onecolwid + sepwid = 0.464
+%-----------------------------------------------------------
+
+\newlength{\sepwid}
+\newlength{\onecolwid}
+\newlength{\halfcolwid}
+\newlength{\twocolwid}
+\newlength{\threecolwid}
+
+\setlength{\sepwid}{0.015\paperwidth}
+\setlength{\onecolwid}{0.3\paperwidth}
+\setlength{\halfcolwid}{0.1425\paperwidth}
+\setlength{\twocolwid}{0.464\paperwidth}
+\setlength{\threecolwid}{0.92\paperwidth}
+\setlength{\topmargin}{-0.5in}
+\usetheme{confposter}
+\usepackage{exscale}
+
+
+  
+%-----------------------------------------------------------
+% Define colours (see beamerthemeconfposter.sty to change these colour definitions)
+%-----------------------------------------------------------
+
+\setbeamercolor{block title}{fg=ngreen,bg=white}
+\setbeamercolor{block body}{fg=black,bg=white}
+\setbeamercolor{block alerted title}{fg=white,bg=dblue!70}
+\setbeamercolor{block alerted body}{fg=black,bg=dblue!10}
+
+%-----------------------------------------------------------
+% Name and authors of poster/paper/research
+%-----------------------------------------------------------
+
+\title{Identifying and correcting sample mix-ups in eQTL data}
+\author{Karl W Broman\footnotemark[1], Mark P Keller\footnotemark[2],
+  Aimee Teo Broman\footnotemark[1], Danielle M Greenawalt\footnotemark[5], \\[18pt] 
+  Christina Kendziorski\footnotemark[1], Eric E Schadt\footnotemark[6], 
+\'Saunak Sen\footnotemark[7], Brian S Yandell$^{\text{3,4}}$, and Alan D Attie\footnotemark[2]}
+
+\institute{\footnotemark[1]{\normalsize Biostatistics and
+  Medical Informatics},
+\footnotemark[2]{\normalsize Biochemistry},
+\footnotemark[3]{\normalsize Statistics},
+\footnotemark[4]{\normalsize Horticulture, UW-Madison};
+\footnotemark[5]{\normalsize Merck \& Co., Inc.};
+\footnotemark[6]{\normalsize Pacific Biosciences};
+\footnotemark[7]{\normalsize UC--San Francisco}
+}
+
+%-----------------------------------------------------------
+% Start the poster itself
+%-----------------------------------------------------------
+% The \rmfamily command is used frequently throughout the poster to force a serif font to be used for the body text
+% Serif font is better for small text, sans-serif font is better for headers (for readability reasons)
+%-----------------------------------------------------------
+
+\begin{document}
+
+\begin{frame}[t]
+
+\begin{columns}[t]								
+  \begin{column}{\sepwid}\end{column}                 % empty spacer column
+  
+  \begin{column}{\onecolwid}
+\begin{exampleblock}{\Large Abstract}
+  {In a mouse intercross with more than 500 animals and genome-wide gene
+expression data on six tissues, we identified a high proportion of
+sample mix-ups in the genotype data, on the order of {\color{nred} 15\%}.  
+
+\vspace{18pt}
+
+Local eQTL (genetic loci influencing gene expression) with extremely
+large effect may be used to form a classifier for predicting an
+individual's eQTL genotype from its gene expression value.  By
+considering multiple eQTL and their related transcripts, we identified
+numerous individuals whose predicted eQTL genotypes (based on their
+expression data) did not match their observed genotypes, and then went
+on to identify other individuals whose genotypes did match the
+predicted eQTL genotypes.  
+
+\vspace{18pt}
+
+The concordance of predictions across six tissues indicated that the
+problem was due to mix-ups in the genotypes.  Consideration of the
+plate positions of the samples indicated a number of off-by-one and
+off-by-two errors, likely the result of pipetting errors.  
+
+\vspace{18pt}
+
+Such sample mix-ups can be a problem in any genetic study. As we show,
+eQTL data allow us to identify, and even correct, such problems.  }
+\end{exampleblock}
+
+\vspace{45mm} % between blocks
+
+    \begin{block}{Data}
+      \begin{itemize}
+        \itemsep18pt
+        \item $\sim$500 B6 $\times$ BTBR intercross mice, all ob/ob
+        \item Genotypes at 2057 SNPs [Affymetrix chips]
+        \item Gene expression in six tissues [Agilent arrays]
+
+            {\color{dblue} \small (adipose, gastrocnemius muscle, hypothalamus, pancreatic
+          islets, kidney, liver)}
+
+        \item Numerous clinical phenotypes 
+
+            {\color{dblue}  \small (e.g., body weight, insulin and glucose levels)}
+
+      \end{itemize}
+    \end{block}
+
+\vspace{45mm} % between blocks
+
+    \begin{block}{Initial observation: Sex swaps}
+
+      \begin{minipage}[t]{\halfcolwid}
+        \vspace*{0mm}
+
+    \centerline{\includegraphics[width=\halfcolwid]{Figs/xchr_fig}}
+    \end{minipage}
+      \hfill
+      \begin{minipage}[t]{\halfcolwid}
+        \vspace*{25mm}
+
+    We should have:
+
+\begin{center}
+\begin{tabular}{ll}\hline
+F$_{\text{2}}$ females: & {\color{dblue} R/R or B/R} \\ \hline
+F$_{\text{2}}$ males: & {\color{dblue} hemizygous B or R} \\ \hline
+\end{tabular} \end{center}
+
+\vspace{48pt}
+
+{\color{nred} But 35 mice had X chromosome genotype that conflicted with their sex.}
+
+\end{minipage}
+
+\end{block}
+
+\vspace{45mm} % between blocks
+
+
+\begin{block}{Which are correct: genotypes or sexes?}
+
+\begin{itemize}
+\itemsep18pt
+\item We could look for a transcript (e.g., Xist) whose expression
+  level is diagnostic for sex.
+
+\item Even better, we can look at transcripts with strong local eQTL
+  (for which genotype is strongly associated with expression level).
+
+\item Transcripts with strong local eQTL are diagnostic for genotype.  By considering
+  multiple such transcripts across the genome, we can form a DNA
+  fingerprint. 
+
+\vspace{18pt}
+\begin{itemize}
+\color{dblue}
+\itemsep18pt
+\item[{\color{nred} $\blacktriangleright$}] QTL = quantitative trait locus: a genomic region that influences
+  a quantitative trait
+
+\item[{\color{nred} $\blacktriangleright$}] eQTL = expression QTL: a QTL that influences the level of
+  expression of a gene
+\end{itemize}
+
+\end{itemize}
+\end{block}
+
+
+
+
+
+  \end{column}
+
+\begin{column}{\sepwid} \end{column}                 % empty spacer column
+
+
+  \begin{column}{\onecolwid}
+
+
+    \begin{block}{A diagnostic transcript}
+
+      \centerline{\includegraphics[width=0.8\onecolwid]{Figs/gve}}
+
+\vspace{18pt}
+
+       Colors indicate the inferred eQTL genotype according
+        to a k-nearest neighbor classifier, with gray points 
+        not called.
+
+    \end{block}
+
+
+
+\vspace{22mm} % between blocks
+
+    \begin{block}{The method}
+
+%      \centerline{\includegraphics[width=0.8\onecolwid]{Figs/gve_scheme}}
+\begin{itemize}
+
+\itemsep18pt
+
+\item Identify expression traits with strong local eQTL (that is, for
+  which genotype at the transcript's genomic position is strongly
+  associated with its expression level)
+
+\item For each trait, create a classifier for predicting eQTL genotype
+  from expression phenotype
+
+\item For each pair of mice, calculate the proportion of mismatches
+  between the observed eQTL genotypes of one mouse and the inferred
+  eQTL genotypes of the other
+\end{itemize}
+
+    \end{block}
+
+\vspace{22mm} % between blocks
+
+    \begin{block}{Proportions of mismatches in eQTL genotypes}
+
+      \centerline{\includegraphics[width=0.8\onecolwid]{Figs/gve_dist}}
+    \end{block}
+
+
+\vspace{22mm} % between blocks
+
+    \begin{block}{Decisions}
+
+      \centerline{\includegraphics[width=0.6\onecolwid]{Figs/gve_dist_byrow_left}}
+
+%\vspace{10mm}
+
+There were $\sim$550 mice with genotypes and $\sim$500 with
+expression data.  
+
+\vspace{18pt}
+
+For each mouse, we plot the proportion of mismatches, between its
+observed genotype data and the genotypes inferred from the
+corresponding gene expression data, against the minimal such proportion of
+mismatches, comparing that observed genotype data to each set of
+inferred genotypes.
+
+%\vspace{18pt}
+%
+%The blue points correspond to good samples.  The green points are
+%errors, but are fixable.  The red points are errors, and correspond to
+%samples for which there is no gene expression data.
+
+    \end{block}
+
+
+
+  \end{column}
+
+\begin{column}{\sepwid} \end{column}                 % empty spacer column
+  
+    
+
+  \begin{column}{\onecolwid}
+    
+    \begin{block}{Inferred genotype mix-ups}
+    \centerline{\includegraphics[width=0.8\onecolwid]{Figs/errors_graphically_new}}
+
+\vspace{5mm}
+
+The gene expression data from the multiple tissues were concordant and
+indicated that the problems were in the genotype data.
+
+\vspace{18pt}
+
+(We did, however, identify and correct a small number of sample
+mix-ups within each of the six sets of gene expression arrays.  This
+was done by considering pairs of tissues and measuring the correlation
+in a mouse's gene expression across tissues.)
+
+\vspace{18pt}
+
+The bulk of the problems concerned apparent pipetting errors in the
+genotyping plates: a series of off-by-one and off-by-two errors
+covering half of each of two plates.  (This {\color{nred} did not}
+happen in Madison!)
+
+\end{block}
+
+
+\vspace{18mm} % between blocks
+
+
+    \begin{block}{Improved results!}
+    \centerline{\includegraphics[width=0.9\onecolwid]{Figs/insulin_lod}}
+
+\vspace{-5mm}
+
+LOD curves for insulin, indicating the evidence for QTL, before and
+after correcting the sample mix-ups.  The corrected data give stronger
+evidence and more QTL.
+\end{block}
+
+
+\vspace{18mm} % between blocks
+
+
+
+    
+    \begin{exampleblock}{\Large Summary}
+      \begin{itemize}
+        \itemsep18pt
+        \item Sample mix-ups happen
+        \item With eQTL data, we can both identify and {\color{nred}
+  correct} mix-ups
+        \item The general idea here has wide application for high-throughput data
+        \item R package: \url{http://github.com/kbroman/lineup}
+        \item Very similar to {\color{ngreen} MixupMapper} 
+              (\small Westra et al., Bioinformatics 27:2104--2111, 2011)
+      \end{itemize}
+    \end{exampleblock}
+
+
+\vspace{10mm} % between blocks
+
+    \begin{block}{Contact}
+\begin{center}      
+      \begin{minipage}{5em}
+    \includegraphics[height=1.2in]{Figs/broman-qrcode}
+      \end{minipage}
+      \begin{minipage}{22em}
+      Karl Broman \hspace{3em}\\ {\tt kbroman@biostat.wisc.edu}\\
+      \url{http://www.biostat.wisc.edu/~kbroman}
+      \end{minipage}
+\end{center}
+    \end{block}
+  
+
+\vspace{5mm} % between blocks
+
+{\rmfamily \footnotesize
+\centerline{This work was supported in part by NIH grants GM074244 (to KWB) and
+DK066369 (to ADA).}}
+  
+
+
+
+  \end{column}
+  
+\begin{column}{\sepwid} \end{column}                 % empty spacer column
+  
+\end{columns}
+
+%\hrule   % <- uncomment to help check that the columns are the same length
+
+\end{frame}
+
+\end{document}
