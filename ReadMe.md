@@ -12,7 +12,9 @@ Presented at
  - [CIBM](http://www.cibm.wisc.edu) retreat,
    [UW-Madison](http://www.wisc.edu), Oct, 2012
    
-Also see the [related blog post](http://kbroman.wordpress.com/2011/09/16/my-first-fancy-poster).
+Also see the
+[related blog post](http://kbroman.wordpress.com/2011/09/16/my-first-fancy-poster)
+and then [how it flopped](http://kbroman.wordpress.com/2011/09/30/poster-flop/).
 <hr/>
 
 To the extent possible under law,
