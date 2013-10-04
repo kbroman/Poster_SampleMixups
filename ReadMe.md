@@ -17,7 +17,11 @@ Also see the
 and then [how it flopped](http://kbroman.wordpress.com/2011/09/30/poster-flop/).
 <hr/>
 
-To the extent possible under law,
+The
+[beamerthemeconfposter.sty](https://github.com/kbroman/Poster_SampleMixups/blob/master/beamerthemeconfposter.sty)
+file is licensed under [GPL version 3](http://www.gnu.org/copyleft/gpl.html)
+
+For the remainder, to the extent possible under law,
 [Karl Broman](http://github.com/kbroman)
 has waived all copyright and related or neighboring rights to
 &ldquo;[Identifying and correcting sample mix-ups in eQTL data](http://github.com/kbroman/Poster_SampleMixups)&rdquo;.
